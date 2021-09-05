@@ -7,6 +7,7 @@ before_action :ensure_correct_user, only:[:edit, :update,:destroy]
     @book = Book.find(params[:id])
     @user = @book.user
     @books = Book.new
+    @post_comment = PostComment.new
   end
 
   def index
@@ -27,7 +28,12 @@ before_action :ensure_correct_user, only:[:edit, :update,:destroy]
 
   def edit
     @book = Book.find(params[:id])
-  end
+    if @book.user == current_user
+      render "edit"
+    else
+      redirect_to books_path
+    end
+ end
 
   def update
     @book = Book.find(params[:id])
@@ -40,8 +46,10 @@ before_action :ensure_correct_user, only:[:edit, :update,:destroy]
 
   def destroy
     @book = Book.find(params[:id])
-    @book.destroy
+    if  @book.destroy
+     flash[notice]="Book was successfully destroyed."
     redirect_to books_path
+   end
   end
 
   private
@@ -49,13 +57,4 @@ before_action :ensure_correct_user, only:[:edit, :update,:destroy]
   def book_params
     params.require(:book).permit(:title, :body)
   end
-
-  def ensure_correct_user
-    @book = Book.find(params[:id])
-    @user = @book.user
-    unless @user == current_user
-      redirect_to books_path
-    end
-  end
-
 end
