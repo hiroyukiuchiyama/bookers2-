@@ -7,4 +7,4 @@ class CreateFavorites < ActiveRecord::Migration[5.2]
       t.timestamps
     end
   end
-end20210905054529_add_book_id_to_favorites
+end
